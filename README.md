@@ -52,6 +52,6 @@ $ npm run test:cov
 
 ## About the Author
 
-- Email - [ltoniut@gmail.com]((mailto:ltoniut@gmail.com)
+- Email - [ltoniut@gmail.com](mailto:ltoniut@gmail.com)
 - LinkedIn - [leandro-toniut](https://www.linkedin.com/in/leandro-toniut/)
 - Github - [ltoniut](https://github.com/ltoniut)

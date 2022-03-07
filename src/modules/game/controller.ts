@@ -23,7 +23,7 @@ import CreateGameRequestDto from './dtos/create.request.dto';
 import UpdateGameRequestDto from './dtos/update.request.dto';
 
 @ApiTags('inbound/transactions/wood-pallets')
-@Controller('actor')
+@Controller('game')
 export class GameController extends BaseController {
   constructor(private readonly gameService: GameService) {
     super();

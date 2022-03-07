@@ -1,8 +1,10 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { PublisherModule } from '../src/modules/publisher/module';
 import { PublisherService } from '../src/modules/publisher/service';
 import { INestApplication } from '@nestjs/common';
+import { Publisher } from 'typeorm/entities';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { PublisherController } from 'modules/publisher/controller';
 
 const mockPublisherDTO = {
   id: 1,
@@ -16,14 +18,21 @@ describe('Pubisher', () => {
   const publisherService = {
     getAll: () => [mockPublisherDTO],
     getById: () => mockPublisherDTO,
-    save: () => mockPublisherDTO,
+    create: () => mockPublisherDTO,
     update: () => mockPublisherDTO,
     delete: () => [],
   };
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [PublisherModule],
+      providers: [
+        PublisherService,
+        {
+          provide: getRepositoryToken(Publisher),
+          useValue: publisherService,
+        },
+      ],
+      controllers: [PublisherController],
     })
       .overrideProvider(PublisherService)
       .useValue(publisherService)
@@ -34,33 +43,35 @@ describe('Pubisher', () => {
   });
 
   it(`/GET publisher`, () => {
-    return request(app.getHttpServer()).get('/publisher').expect(200).expect({
-      data: publisherService.getAll(),
-    });
+    return request(app.getHttpServer())
+      .get('/publisher')
+      .expect(200)
+      .expect(publisherService.getAll());
   });
 
   it(`/GET publisher by id`, () => {
-    return request(app.getHttpServer()).get('/publisher/1').expect(200).expect({
-      data: publisherService.getById(),
-    });
+    return request(app.getHttpServer())
+      .get('/publisher/1')
+      .expect(200)
+      .expect(publisherService.getById());
   });
 
   it(`/POST publisher`, () => {
-    return request(app.getHttpServer()).post('/publisher/').expect(200).expect({
-      data: publisherService.save(),
-    });
+    return request(app.getHttpServer())
+      .post('/publisher/')
+      .expect(201)
+      .expect(publisherService.create());
   });
 
   it(`/PUT publisher`, () => {
-    return request(app.getHttpServer()).post('/publisher/').expect(200).expect({
-      data: publisherService.update(),
-    });
+    return request(app.getHttpServer())
+      .put('/publisher/1')
+      .expect(200)
+      .expect(publisherService.update());
   });
 
   it(`/DELETE publisher`, () => {
-    return request(app.getHttpServer()).post('/delete/').expect(200).expect({
-      data: publisherService.delete(),
-    });
+    return request(app.getHttpServer()).delete('/publisher/1').expect(200);
   });
 
   afterAll(async () => {
